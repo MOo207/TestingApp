@@ -10,18 +10,25 @@ class Camera extends StatefulWidget {
 }
 
 class _CameraState extends State<Camera> {
+  var station = TextEditingController();
+  var camera = TextEditingController();
+
   File imageFile;
   Future<String> future;
 
-  // Change this var value to current url.
-  String url = "http://192.168.43.59:8080/passenger/upload/5f0d22f5f41c643ac4908eb5/5f0d22f5f41c643ac4908eb6";
-  //  Change this var value to current url.
-// camera 0 http://192.168.43.16:8080/api/upload/5f0d22f5f41c643ac4908eb5/5f0d22f5f41c643ac4908eb6
-// camera 1 http://192.168.43.16:8080/api/upload/5f0d22f5f41c643ac4908eb5/5f0d22f5f41c643ac4908eb7
+   @override
+  void dispose() {
+    station.dispose();
+    camera.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
-    Future<String> _upload(File image, String url) async {
+    Future<String> _upload(File image, String station,String camera ) async {
+      String url = "http://192.168.43.59:8080/passenger/upload/$station/$camera";
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.files.add(
         await http.MultipartFile.fromPath('image', image.path,
@@ -48,7 +55,7 @@ class _CameraState extends State<Camera> {
       if (pickedFile != null) {
         setState(() {
           imageFile = File(pickedFile.path);
-          future = _upload(imageFile, url);
+          future = _upload(imageFile, station.text.trim(), camera.text.trim());
         });
       }
     }
@@ -103,10 +110,15 @@ class _CameraState extends State<Camera> {
         ),
         child: Column(
           children: <Widget>[
-            imageFile == null ? Text('Choose Image') : Image.file(imageFile),
+            _field("station id", station),
             SizedBox(
-              height: 50,
+              height: 10,
             ),
+            _field("camera id", camera),
+            SizedBox(
+              height: 10,
+            ),
+            imageFile == null ? Text('Choose Image') : Image.file(imageFile),
             if (imageFile == null || future == null)
               Text('')
             else
@@ -126,6 +138,20 @@ class _CameraState extends State<Camera> {
           ],
         ),
       )),
+    );
+  }
+  Widget _field(String hint, TextEditingController myController) {
+    return TextField(
+      expands: false,
+      controller: myController,
+      cursorColor: Colors.blue,
+      style: TextStyle(color: Colors.white),
+      textAlign: TextAlign.center,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.black),
+      ),
     );
   }
 }

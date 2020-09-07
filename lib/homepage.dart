@@ -1,7 +1,7 @@
+import 'package:TestingApp/services/getStations/stations.dart';
 import 'package:flutter/material.dart';
 import 'package:TestingApp/services/camera/camera.dart';
 import 'package:TestingApp/services/busTrack/location.dart';
-import 'package:TestingApp/services/getRequests/getRequests.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,21 +26,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           labelColor: Colors.amber,
           tabs: [
             Tab(
-              icon: Icon(Icons.archive),
-            ),
-             Tab(icon: Icon(Icons.add_a_photo)),
-             Tab(
               icon: Icon(Icons.gps_fixed),
             ),
+             Tab(icon: Icon(Icons.add_a_photo)),
+             Tab(icon: Icon(Icons.notification_important)),
           ],
           controller: _tabController,
         ),
       ),
       body: TabBarView(
         children: [
-          GetRequests(),
+           GeoListenPage(),
+           // Location(androidFusedLocation: true,),
           Camera(),
-          Location(androidFusedLocation: true)
+          GetStations()
         ],
         controller: _tabController,
       ),
